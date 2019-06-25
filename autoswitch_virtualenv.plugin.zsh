@@ -15,15 +15,14 @@ function _has_virtualenv() {
 }
 
 
-if [[ "$(_has_virtualenv)" == "no" ]]; then
-    export DISABLE_AUTOSWITCH_VENV="1"
+function _virtualenv_warning() {
     printf "${BOLD}${RED}"
     printf "zsh-autoswitch-virtualenv requires virtualenv to be installed!\n\n"
     printf "${NORMAL}"
     printf "If this is already installed but you are still seeing this message, \n"
     printf "then make sure the ${BOLD}virtualenv${NORMAL} command is in your PATH.\n"
     printf "\n"
-fi
+}
 
 
 function _virtual_env_dir() {
@@ -136,7 +135,7 @@ function check_venv()
         printf "Run ${PURPLE}mkvenv${NORMAL} to setup autoswitching\n"
     fi
 
-    if [[ -n "$SWITCH_TO" ]]; then
+    if [[ "$(_has_virtualenv)" == "yes" ]] && [[ -n "$SWITCH_TO" ]]; then
         _maybeworkon "$(_virtual_env_dir "$SWITCH_TO")" "virtualenv"
 
         # check if Pipfile exists rather than invoking pipenv as it is slow
@@ -163,6 +162,11 @@ function _default_venv()
 # remove virtual environment for current directory
 function rmvenv()
 {
+    if [[ "$(_has_virtualenv)" == "no" ]]; then
+        _virtualenv_warning
+        return
+    fi
+
     if [[ -f ".venv" ]]; then
         local venv_name="$(<.venv)"
 
@@ -190,6 +194,11 @@ function rmvenv()
 # helper function to create a virtual environment for the current directory
 function mkvenv()
 {
+    if [[ "$(_has_virtualenv)" == "no" ]]; then
+        _virtualenv_warning
+        return
+    fi
+
     if [[ -f ".venv" ]]; then
         printf ".venv file already exists. If this is a mistake use the rmvenv command\n"
     else
