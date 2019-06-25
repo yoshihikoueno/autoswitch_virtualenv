@@ -6,8 +6,16 @@ PURPLE="\e[35m"
 BOLD="\e[1m"
 NORMAL="\e[0m"
 
+function _has_virtualenv() {
+    if type "virtualenv" > /dev/null; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+}
 
-if ! type "virtualenv" > /dev/null; then
+
+if [[ "$(_has_virtualenv)" == "no" ]]; then
     export DISABLE_AUTOSWITCH_VENV="1"
     printf "${BOLD}${RED}"
     printf "zsh-autoswitch-virtualenv requires virtualenv to be installed!\n\n"
