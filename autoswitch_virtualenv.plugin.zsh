@@ -128,14 +128,5 @@ function disable_autoswitch_virtualenv() {
 }
 
 
-if ! type "virtualenv" > /dev/null; then
-    printf "${BOLD}${RED}"
-    printf "zsh-autoswitch-virtualenv requires virtualenv to be installed!\n\n"
-    printf "${NORMAL}"
-    printf "If this is already installed but you are still seeing this message, \n"
-    printf "then make sure the ${BOLD}virtualenv${NORMAL} command is in your PATH.\n"
-    printf "\n"
-else
-    enable_autoswitch_virtualenv
-    check_venv
-fi
+enable_autoswitch_virtualenv
+check_venv
